@@ -5,6 +5,11 @@ on: [push,pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      nats:
+        image: nats
+        ports:
+          - 4222
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
@@ -13,4 +18,7 @@ jobs:
         ruby-version: 3.0.2
         bundler-cache: true
     - name: Run the default task
-      run: bundle exec rake
+      env:
+        NATS_PORT: "${{ job.services.nats.ports[4222] }}"
+        NATS_HOST: localhost
+      run: bundle exec rspec
