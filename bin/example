@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "boom_nats"
+
+class MyTopic < BoomNats::Topic
+  def consume
+    {
+      hello: params["name"]
+    }
+  rescue StandardError => e
+    puts e.message
+  end
+end
+
+BoomNats.setup do
+  servers "nats://0.0.0.0:4222"
+
+  draw_routes do
+    in_queue "test" do
+      topic "hello", MyTopic
+    end
+  end
+end
+
+BoomNats.application.start
