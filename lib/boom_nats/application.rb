@@ -43,13 +43,11 @@ module BoomNats
 
           BoomNats.logger.debug "BoomNats::started"
 
-          return if defined?(Rails::Railtie)
-
-          prepare_trap
+          prepare_trap unless defined?(Rails::Railtie)
         end
       end
 
-      wait
+      wait unless defined?(Rails::Railtie)
     end
 
     def stop
