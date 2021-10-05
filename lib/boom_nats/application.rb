@@ -4,7 +4,7 @@ require "concurrent-edge"
 module BoomNats
   class Application
     attr_accessor :router, :nats_options
-    attr_reader :route_topics, :nats
+    attr_reader :route_topics
 
     def initialize
       @route_topics = []

@@ -15,7 +15,7 @@ RSpec.describe BoomNats do
     @s.kill_server
   end
 
-  let(:nats_server) { "nats://#{ENV.fetch("NATS_HOST") { "localhost" }}:#{ENV.fetch("NATS_PORT") { "4222" }}" }
+  let(:nats_server) { "nats://#{ENV.fetch("NATS_HOST", "localhost")}:#{ENV.fetch("NATS_PORT", "4222")}" }
 
   it "has a version number" do
     expect(BoomNats::VERSION).not_to be nil
