@@ -53,6 +53,7 @@ RSpec.describe BoomNats do
       consume.consume
     end
     BoomNats.application.nats.publish "topic_name", "content"
+    sleep 1
     expect(consume).to have_received(:consume)
 
     # - - - - - - - - -
