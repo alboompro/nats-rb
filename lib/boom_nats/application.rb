@@ -99,7 +99,7 @@ module BoomNats
 
     def nats_connect(&block)
       NATS.start({
-                   servers: @servers,
+                   servers: @server,
                    **(nats_options.is_a?(Hash) ? nats_options : {})
                  }, &block)
     end
