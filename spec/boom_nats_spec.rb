@@ -7,7 +7,6 @@ RSpec.describe BoomNats do
 
     @s = NatsServerControl.new nats_server
     @s.start_server(true)
-    allow_any_instance_of(BoomNats::Application).to receive(:wait)
     allow_any_instance_of(Kernel).to receive(:exit)
     allow_any_instance_of(Kernel).to receive(:puts)
   end
@@ -16,7 +15,7 @@ RSpec.describe BoomNats do
     @s.kill_server
   end
 
-  let(:nats_server) { "nats://#{ENV.fetch("NATS_PORT") { "localhost" }}:#{ENV.fetch("NATS_PORT") { "4222" }}" }
+  let(:nats_server) { "nats://#{ENV.fetch("NATS_HOST") { "localhost" }}:#{ENV.fetch("NATS_PORT") { "4222" }}" }
 
   it "has a version number" do
     expect(BoomNats::VERSION).not_to be nil
@@ -43,24 +42,20 @@ RSpec.describe BoomNats do
 
     BoomNats.application.start
 
-    ch = Concurrent::Channel.new capacity: 1
-    allow_any_instance_of(A).to receive(:consume) do
-      ch.put({ a: 1 })
-    end
-    Concurrent::Channel.go do
-      BoomNats.application.nats.publish "topic_name", "content"
-    end
-    expect(ch.take).to eq({ a: 1 })
+    content = { "name" => "topic_name" }
+    result = BoomNats.request "topic_name", content
+    expect(result).to eql({ "params" => content })
 
-    ch = Concurrent::Channel.new capacity: 1
+    # - - - - - - - - -
+
+    consume = spy("consume")
     allow_any_instance_of(A).to receive(:consume) do
-      ch.put({ a: 2 })
-      { a: 2 }
+      consume.consume
     end
-    Concurrent::Channel.go do
-      BoomNats.application.nats.request "topic_name", "content"
-    end
-    expect(ch.take).to eq({ a: 2 })
+    BoomNats.application.nats.publish "topic_name", "content"
+    expect(consume).to have_received(:consume)
+
+    # - - - - - - - - -
 
     expect { BoomNats::Topic.new(nil, nil, nil, nil, nil).consume }.to raise_error BoomNats::Error
 

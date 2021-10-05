@@ -91,8 +91,8 @@ class NatsServerControl
 end
 
 class A < BoomNats::Topic
-  def consumer
-    { a: 1 }
+  def consume
+    { params: params }
   end
 end
 

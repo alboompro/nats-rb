@@ -12,6 +12,7 @@ module BoomNats
 
   extend BoomNats::Serializer
   extend BoomNats::Setup
+  extend BoomNats::Requester
 
   mattr_accessor :logger
 end
