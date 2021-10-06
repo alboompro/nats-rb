@@ -5,14 +5,18 @@ NATS is a simple, secure and performant communications system for digital system
 This implementation works in both modes: Standalone and Rails based applications.
 
 ## Documentation
-- [Configurations](#configurations)
-- [Rails](#rails)
-  - [Installing](#rails-installing)
-  - [Configuration](#rails-configuration)
-- [Standalone](#standalone)
-  - [Installing](#standalone-installing)
-  - [Configuration](#standalone-configuration)
-  - [Starting Application](#standalone-starting-application)
+
+- [BoomNats](#boomnats)
+  - [Documentation](#documentation)
+  - [configurations](#configurations)
+  - [Rails](#rails)
+    - [Rails Installing](#rails-installing)
+    - [Rails Configuration](#rails-configuration)
+  - [Standalone](#standalone)
+    - [Standalone Installing](#standalone-installing)
+    - [Standalone Configuration](#standalone-configuration)
+    - [Standalone Starting Application](#standalone-starting-application)
+
 ## configurations
 
 ```ruby
@@ -28,7 +32,7 @@ BoomNats.setup do
 
   # with authentication
   servers "nats://user:pass@localhost:4222"
-  
+
 
   # map NATS topics to Topic classes
   draw_routes do
@@ -86,7 +90,6 @@ rails g boom_nats:consumer PaymentGetter
 # creates file: app/consumers/payment_getter_consumer.rb
 ```
 
-
 ## Standalone
 
 To facilitate learning, you can download the default repository containing a boilerplate project with (Ruby, Nats and ActiveRecord)
@@ -108,7 +111,7 @@ gem install boom_nats
 With bundle, add gem to Gemfile
 
 ```ruby
-gem 'boom_nats', '~> 0.1.0'
+gem 'boom_nats', '~> 0.1.2'
 ```
 
 ### Standalone Configuration
