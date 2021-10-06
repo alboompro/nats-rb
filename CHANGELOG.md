@@ -1,4 +1,4 @@
-## [Unreleased]
+## v0.1.2 - 2021-10-05
 
 - Standalone version
 - Rails based version
