@@ -62,4 +62,30 @@ RSpec.describe BoomNats do
 
     BoomNats.application.kill
   end
+
+  it "should execute callbacks correctly before/after application start" do
+    server = nats_server
+    beforeCallback = spy("beforeCallback")
+    afterCallback = spy("afterCallback")
+
+    BoomNats.setup do
+      servers server
+      on_before do |app|
+        beforeCallback.call(app)
+      end
+
+      on_after do |app|
+        afterCallback.call(app)
+      end
+    end
+
+    BoomNats.application.start
+
+    sleep 1
+
+    expect(beforeCallback).to have_received(:call).with(BoomNats.application)
+    expect(afterCallback).to have_received(:call).with(BoomNats.application)
+
+    BoomNats.application.kill
+  end
 end
