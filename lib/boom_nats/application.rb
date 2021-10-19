@@ -9,6 +9,11 @@ module BoomNats
     def initialize
       @route_topics = []
       @subscriptions = []
+      @callbacks = {
+        before: [],
+        after: []
+      }
+
       @mutex = Mutex.new
     end
 
@@ -32,8 +37,18 @@ module BoomNats
       NATS
     end
 
+    def on_before(&block)
+      @callbacks[:before] << block
+    end
+
+    def on_after(&block)
+      @callbacks[:after] << block
+    end
+
     def start
       Thread.new do
+        @callbacks[:before].each { |callback| callback.call(self) }
+
         nats_connect do |nats|
           @route_topics.each do |rt|
             @subscriptions << nats.subscribe(rt.topic, rt.options) do |msg, reply, _sub|
@@ -44,6 +59,8 @@ module BoomNats
           BoomNats.logger.debug "BoomNats::started"
 
           prepare_trap unless defined?(Rails::Railtie)
+
+          @callbacks[:after].each { |callback| callback.call(self) }
         end
       end
 
