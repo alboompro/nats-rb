@@ -7,7 +7,7 @@ require "active_support/core_ext/module/attribute_accessors"
 loader = Zeitwerk::Loader.for_gem
 loader.setup
 loader.ignore("#{__dir__}/boom_nats/railtie.rb")
-loader.ignore("#{__dir__}/generators/**/*.rb")
+loader.ignore("#{__dir__}/generators")
 
 module BoomNats
   class Error < StandardError; end
