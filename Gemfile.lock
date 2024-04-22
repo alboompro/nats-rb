@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    boom_nats (0.1.4)
+    boom_nats (0.1.5)
       activesupport (>= 2.1)
       concurrent-ruby-edge (~> 0.6, < 1.0)
       nats (>= 0.11.0, < 1.0)
