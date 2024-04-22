@@ -45,6 +45,16 @@ module BoomNats
       @callbacks[:after] << block
     end
 
+    def error_as_json(msg, topic, error)
+      {
+        message: msg,
+        topic: topic,
+        error: "#{error.class}: #{error.message}",
+        backtrace: error.backtrace,
+        status: "error"
+      }.to_json
+    end
+
     def start
       Thread.new do
         @callbacks[:before].each { |callback| callback.call(self) }
@@ -53,6 +63,9 @@ module BoomNats
           @route_topics.each do |rt|
             @subscriptions << nats.subscribe(rt.topic, rt.options) do |msg, reply, _sub|
               rt.executor.new(msg, reply, nats, rt.serializer, rt.parser)
+            rescue StandardError => e
+              BoomNats.logger.error "BoomNats::error: #{e.message}"
+              nats.publish(reply, error_as_json(msg, rt.topic, e)) unless reply.nil?
             end
           end
 
@@ -62,8 +75,6 @@ module BoomNats
 
           @callbacks[:after].each { |callback| callback.call(self) }
         end
-      rescue StandardError => e
-        BoomNats.logger.error "BoomNats::error: #{e.message}"
       end
 
       wait unless defined?(Rails::Railtie)
