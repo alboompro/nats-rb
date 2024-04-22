@@ -62,6 +62,8 @@ module BoomNats
 
           @callbacks[:after].each { |callback| callback.call(self) }
         end
+      rescue StandardError => e
+        BoomNats.logger.error "BoomNats::error: #{e.message}"
       end
 
       wait unless defined?(Rails::Railtie)
